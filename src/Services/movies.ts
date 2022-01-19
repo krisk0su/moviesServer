@@ -1,4 +1,4 @@
-import { IGetMovies, IMovieValidator } from "../Interfaces/movies";
+import { IEditMovieValidator, IGetMovies, IMovieValidator } from "../Interfaces/movies";
 import { movieModel } from "../Models/movies/movies";
 import { createActors } from "./actors";
 import { verifyJwt } from "../lib/jwtService";
@@ -23,6 +23,12 @@ export const createMovie = async (home: IMovieValidator) => {
         throw new Errors.BadRequestError("This movies already exists.")
     }
 }
+
+export const editMovie = async (movie: IEditMovieValidator) => {
+    const {id} = movie;
+    await movieModel.updateOne({id}, movie );
+    return id;
+};
 
 export const getMovies = async (criteria: IGetMovies) => {
     const {searchTerm, genres, imdbRating, year, page} = criteria;

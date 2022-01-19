@@ -8,6 +8,14 @@ export interface IMovie extends IMovieValidator{
     likes: any[];
 };
 
+export interface IEditMovieValidator {
+    id: string;
+    name:string;
+    description: string;
+    year: number;
+    trailer: string;
+};
+
 export interface IMovieValidator {
     name: string;
     description: string;

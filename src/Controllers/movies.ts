@@ -9,8 +9,8 @@ import {
     ServiceContext
 } from "typescript-rest";
 import { createValidator, getMoviesValidator } from "../Validators/homes/movies";
-import { createMovie, getMovie, getMovies, likeMovie } from "../Services/movies";
-import { IGetMovies, IMovieValidator } from "../Interfaces/movies";
+import { createMovie, editMovie, getMovie, getMovies, likeMovie } from "../Services/movies";
+import { IEditMovieValidator, IGetMovies, IMovieValidator } from "../Interfaces/movies";
 import { jwtValidator } from "../Validators/jwt/jwt";
 
 
@@ -21,7 +21,7 @@ export class Movies {
 
     @GET
     @Path("/:id")
-    async getHomeById(@PathParam('id') id: string) {
+    async getMovieById(@PathParam('id') id: string) {
         const movie =  await getMovie(id);
 
         return movie;
@@ -42,6 +42,12 @@ export class Movies {
 
         //TODO redirect to movies
         return "Movie created"
+    }
+
+    @PUT
+    async editMovie(movie: IEditMovieValidator){
+        const id: String = await editMovie(movie);
+        return this.getMovieById(`${id}`);
     }
 
     @PUT
