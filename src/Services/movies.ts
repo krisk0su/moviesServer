@@ -37,38 +37,28 @@ export const getMovies = async (criteria: IGetMovies) => {
     const limit = 10;
     const skip: number = (page - 1) * limit;
 
-    if (searchTerm) {
-        movies = await movieModel
-            .find(
-                {
-                    $text: {$search: searchTerm}
-                },
-            )
-            .skip(skip)
-            .limit(limit);
+    let filter: any = {};
 
+    if (searchTerm) {
+        filter.$text = {$search: searchTerm}
     }
 
     if (genres) {
-        movies = await movieModel
-            .find({genres: {$in: genres}})
-            .skip(skip)
-            .limit(limit);
+        filter.genres = {$in: genres};
     }
 
     if (imdbRating) {
-        movies = await movieModel
-            .find({imdbRating: {$gte: imdbRating}})
-            .skip(skip)
-            .limit(limit);
+        filter.imdbRating = {$gte: imdbRating};
     }
 
     if (year) {
-        movies = await movieModel
-            .find({year: year})
-            .skip(skip)
-            .limit(limit);
+        filter.year = year;
     }
+    movies = await movieModel
+        .find(filter)
+        .skip(skip)
+        .limit(limit);
+
     return movies;
 }
 

@@ -5,13 +5,13 @@ import {
     PathParam,
     POST,
     PreProcessor,
-    PUT,
+    PUT, QueryParam, Security,
     ServiceContext
 } from "typescript-rest";
 import { createValidator, getMoviesValidator } from "../Validators/homes/movies";
 import { createMovie, editMovie, getMovie, getMovies, likeMovie } from "../Services/movies";
 import { IEditMovieValidator, IGetMovies, IMovieValidator } from "../Interfaces/movies";
-import { jwtValidator } from "../Validators/jwt/jwt";
+import { jwtValidAdmin, jwtValidator } from "../Validators/jwt/jwt";
 
 
 @Path('movies')
@@ -37,6 +37,7 @@ export class Movies {
 
     @POST
     @PreProcessor(createValidator)
+    @PreProcessor(jwtValidAdmin)
     async createMovie(movie: IMovieValidator) {
         const res = await createMovie(movie);
 
@@ -45,6 +46,7 @@ export class Movies {
     }
 
     @PUT
+    @PreProcessor(jwtValidAdmin)
     async editMovie(movie: IEditMovieValidator){
         const id: String = await editMovie(movie);
         return this.getMovieById(`${id}`);
@@ -57,4 +59,6 @@ export class Movies {
         await likeMovie(id, this.context.request.headers.authorization);
         return "as";
     }
+
+
 }

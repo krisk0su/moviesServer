@@ -1,14 +1,13 @@
 import { model, Schema } from "mongoose";
-import { ICreateUser, IUserDocument } from "../../Interfaces/users";
+import { IUserDocument } from "../../Interfaces/users";
 import { hash, compare } from "bcrypt";
 
 const users: Schema<IUserDocument> = new Schema<IUserDocument>({
-    firstName: {type: String, required: true},
-    lastName: {type: String, required: true},
+    firstname: {type: String, required: true},
+    lastname: {type: String, required: true},
     password: {type: String, required: true},
     email: {type: String, required: true},
-    phoneNumber: {type: String, required: true},
-    userName: {type: String, required: true},
+    username: {type: String, required: true, unique: true},
 });
 
 

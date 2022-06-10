@@ -11,7 +11,7 @@ export const createUser = async (user: ICreateUser) => {
 }
 
 export const loginUser = async (user: ILoginUser) => {
-    const foundUser: IUserDocument = await userModel.findOne({userName: user.userName});
+    const foundUser: IUserDocument = await userModel.findOne({userName: user.username});
     if(!foundUser){
         throw new UnauthorizedError(WRONG_CREDENTIALS);
     };

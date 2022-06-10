@@ -1,7 +1,5 @@
 import {
-    Project,
-    VariableDeclarationKind,
-    InterfaceDeclaration,
+    Project
 } from "ts-morph";
 
 // initName is name of the interface file below the root, ./src is considered the root
