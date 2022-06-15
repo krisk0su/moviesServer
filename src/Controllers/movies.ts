@@ -5,13 +5,14 @@ import {
     PathParam,
     POST,
     PreProcessor,
-    PUT, QueryParam, Security,
+    PUT,
     ServiceContext
 } from "typescript-rest";
-import { createValidator, getMoviesValidator } from "../Validators/homes/movies";
+import { createMovieValidator, getMoviesValidator } from "../Validators/movies/movies";
 import { createMovie, editMovie, getMovie, getMovies, likeMovie } from "../Services/movies";
-import { IEditMovieValidator, IGetMovies, IMovieValidator } from "../Interfaces/movies";
+import { IEditMovieValidator, IGetMovies } from "../Interfaces/movies";
 import { jwtValidAdmin, jwtValidator } from "../Validators/jwt/jwt";
+import { IEntityValidator } from "../Interfaces/common";
 
 
 @Path('movies')
@@ -22,7 +23,7 @@ export class Movies {
     @GET
     @Path("/:id")
     async getMovieById(@PathParam('id') id: string) {
-        const movie =  await getMovie(id);
+        const movie = await getMovie(id);
 
         return movie;
     }
@@ -36,10 +37,10 @@ export class Movies {
     }
 
     @POST
-    @PreProcessor(createValidator)
+    @PreProcessor(createMovieValidator)
     @PreProcessor(jwtValidAdmin)
-    async createMovie(movie: IMovieValidator) {
-        const res = await createMovie(movie);
+    async createMovie(movie: IEntityValidator) {
+         const res = await createMovie(movie);
 
         //TODO redirect to movies
         return "Movie created"
@@ -47,7 +48,7 @@ export class Movies {
 
     @PUT
     @PreProcessor(jwtValidAdmin)
-    async editMovie(movie: IEditMovieValidator){
+    async editMovie(movie: IEditMovieValidator) {
         const id: String = await editMovie(movie);
         return this.getMovieById(`${id}`);
     }
@@ -59,6 +60,4 @@ export class Movies {
         await likeMovie(id, this.context.request.headers.authorization);
         return "as";
     }
-
-
 }

@@ -1,11 +1,10 @@
 import express from "express";
 import { validateBody } from "../../lib/bodyValidator";
-import { Errors } from "typescript-rest";
 
 const fileName = "movies";
 
-export const createValidator = (req: express.Request) => {
-    validateBody(fileName, "IMovieValidator", req);
+export const createMovieValidator = (req: express.Request) => {
+    validateBody(fileName, "IEntityValidator", req);
 }
 
 export const getMoviesValidator = (req: express.Request) => {

@@ -4,14 +4,15 @@ import { createActors } from "./actors";
 import { verifyJwt } from "../lib/jwtService";
 import { Errors } from "typescript-rest";
 import { createGenres } from "./genres";
+import { IEntityValidator } from "../Interfaces/common";
 
 
-export const createMovie = async (home: IMovieValidator) => {
-    const actors = await createActors(home.actors);
-    const genres = await createGenres(home.genres);
+export const createMovie = async (movie: IEntityValidator) => {
+    const actors = await createActors(movie.actors);
+    const genres = await createGenres(movie.genres);
     const newMovie: any = new movieModel(
         {
-            ...home,
+            ...movie,
             actors,
             genres
         }

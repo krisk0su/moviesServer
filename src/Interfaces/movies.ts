@@ -1,3 +1,5 @@
+import { IEntityValidator } from "./common";
+
 export interface IMovieDocument extends IMovie,Document {
 
 }
@@ -16,14 +18,8 @@ export interface IEditMovieValidator {
     trailer: string;
 };
 
-export interface IMovieValidator {
-    name: string;
-    description: string;
-    trailer: string;
-    year: number;
-    actors: any[];
-    imdbRating: number;
-    genres: any[];
+export interface IMovieValidator extends IEntityValidator{
+    likes: any[]
 };
 
 export interface IGetMovies{

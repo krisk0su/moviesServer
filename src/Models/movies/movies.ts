@@ -8,9 +8,9 @@ const movies: Schema<IMovieDocument> = new Schema<IMovieDocument>({
     year: {type: Number, required: true},
     watchLinks: {type: [], required: true, default: []},
     imdbRating: {type: Number, required: true},
-    actors: [{ type : Types.ObjectId, ref: 'Actors', required: true}],
-    likes: [{ type : Types.ObjectId, ref: 'Users', required: true}],
-    genres: [{ type : Types.ObjectId, ref: 'Genres', required: true}]
+    actors: [{type: Types.ObjectId, ref: 'Actors', required: true}],
+    likes: [{type: Types.ObjectId, ref: 'Users', required: true}],
+    genres: [{type: Types.ObjectId, ref: 'Genres', required: true}]
 })
 
 movies.index({name: "text"});
