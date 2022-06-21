@@ -15,8 +15,3 @@ export interface ILoginUser {
     username: string;
     password: string;
 }
-
-export enum Roles {
-  User = 'User',
-    Admin = 'Admin'
-}

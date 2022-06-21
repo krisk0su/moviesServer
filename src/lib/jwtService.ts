@@ -1,5 +1,5 @@
 import { sign, verify } from "jsonwebtoken";
-import { Roles } from "../Interfaces/users";
+import { Roles } from "../Enums/users";
 
 export const createJWT = (user: any) => {
     return sign({

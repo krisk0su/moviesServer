@@ -2,7 +2,8 @@ import express from "express";
 import { Errors } from "typescript-rest";
 import { verifyJwt } from "../../lib/jwtService";
 import { decode } from "jsonwebtoken";
-import { Roles } from "../../Interfaces/users";
+import { Roles } from "../../Enums/users";
+
 
 export function jwtValidator(req: express.Request){
     if(!req.headers.authorization){

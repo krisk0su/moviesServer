@@ -4,8 +4,8 @@ export interface IEpisodeDocument extends IEpisode, Document {
 
 export interface IEpisode {
     seriesId: any,
-    season: number,
+    season: string,
     title: string,
-    watchLinks: any[]
-
+    watchLinks: any[],
+    type: string
 }

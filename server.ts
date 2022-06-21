@@ -6,7 +6,7 @@ import { verify } from "jsonwebtoken";
 import { Strategy } from "passport-http-bearer";
 
 export class ApiServer {
-    public PORT: number = +process.env.PORT || 3000;
+    public PORT: number = +process.env.PORT || 3333;
 
     private readonly app: any;
     private server: http.Server = null;
