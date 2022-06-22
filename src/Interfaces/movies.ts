@@ -1,5 +1,3 @@
-import { IEntityValidator } from "./common";
-
 export interface IMovieDocument extends IMovie, Document {
 
 }
@@ -8,7 +6,6 @@ export interface IMovie extends IMovieValidator {
     watchLinks: any[];
     comments: any[];
     likes: any[];
-    episodes: any[];
 };
 
 export interface IEditMovieValidator {

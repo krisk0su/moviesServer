@@ -4,10 +4,9 @@ import { createActors } from "./actors";
 import { verifyJwt } from "../lib/jwtService";
 import { Errors } from "typescript-rest";
 import { createGenres } from "./genres";
-import { IEntityValidator } from "../Interfaces/common";
 import { MovieType } from "../Enums/movies";
 import { IEpisode } from "../Interfaces/episodes";
-import { episodeModel } from "../Models/series/episodes";
+import { episodeModel } from "../Models/episodes/episodes";
 import { isValidObjectId } from "mongoose";
 
 
@@ -27,7 +26,7 @@ export const createMovie = async (movie: IMovieValidator) => {
         const result = await newMovie.save();
         return result._id;
     } catch (err) {
-        throw new Errors.BadRequestError("This movies already exists.")
+        throw new Errors.BadRequestError(err.message)
     }
 }
 
@@ -60,7 +59,7 @@ export const getMovies = async (criteria: IGetMovies) => {
     }
 
     if (year) {
-        filter.year = year;
+        filter.year = {$eq: year};
     }
 
     if (type) {
@@ -78,10 +77,13 @@ export const getMovies = async (criteria: IGetMovies) => {
 export const likeMovie = async (movieId: string, token: string) => {
     const {userId} = verifyJwt(token).payload;
     try {
-        await movieModel.updateOne({_id: movieId},
+        const result = await movieModel.updateOne({_id: movieId},
             {$addToSet: {likes: userId}});
+        if (result.modifiedCount === 0) {
+            throw new Errors.BadRequestError("You have already like this movie.")
+        }
     } catch (err: any) {
-        throw new Errors.BadRequestError("You already have liked this movies.")
+        throw new Errors.BadRequestError(err.message)
     }
 }
 
@@ -90,6 +92,46 @@ export const getMovie = async (movieId: string) => {
     return movie;
 }
 
+export const addEpisode = async (episode: IEpisode) => {
+    const {seriesId} = episode;
+    try {
+        const {type} = await checkIdAndGetEntity(seriesId);
+        validateMovieType(type);
+        const newEpisode = new episodeModel({...episode, type});
+        const result = await newEpisode.save();
+        return result._id;
+    } catch (err) {
+        throw new Errors.BadRequestError(err.message)
+    }
+}
+
+export const getEpisodes = async (seriesId: string, season: string) => {
+    const entity = await checkIdAndGetEntity(seriesId);
+    validateMovieType(entity.type);
+    const episodes = await episodeModel.find({seriesId, season});
+    return {
+        entity,
+        episodes
+    }
+}
+//privates
+const checkIdAndGetEntity = async (id: any) => {
+    const isObjectIdValid = isValidObjectId(id);
+    if (!isObjectIdValid) {
+        throw new Errors.BadRequestError("The seriesId is not valid.");
+    }
+    const serie: IMovieDocument = await movieModel.findOne({_id: id});
+    if (!serie) {
+        throw new Errors.BadRequestError("The seriesId does not exist in the database.");
+    }
+    return serie;
+}
+
+const validateMovieType = (type: string) => {
+    if (type === MovieType.MOVIE) {
+        throw new Errors.BadRequestError(`The seriesId is of type ${MovieType.MOVIE} but it has to be ${MovieType.SERIE} or ${MovieType.ANIME}.`);
+    }
+}
 const getType = (type: string) => {
     switch (type.toUpperCase()) {
         case MovieType.MOVIE:
@@ -103,30 +145,3 @@ const getType = (type: string) => {
     }
 }
 
-export const addEpisode = async (episode: IEpisode) => {
-    const {seriesId} = episode;
-    try {
-        const type = await checkIfSeriesIdExists(seriesId);
-        const newEpisode = new episodeModel({...episode, type});
-        const result = await newEpisode.save();
-        return result._id;
-    } catch (err) {
-        throw new Errors.BadRequestError(err.message)
-    }
-}
-
-const checkIfSeriesIdExists = async (id: any) => {
-    const isObjectIdValid = isValidObjectId(id);
-    if (!isObjectIdValid) {
-        throw new Errors.BadRequestError("The seriesId is not valid.");
-    }
-    const serie: IMovieDocument = await movieModel.findOne({_id: id});
-    if (!serie) {
-        throw new Errors.BadRequestError("The seriesId does not exist in the database");
-    }
-    const type = serie.type;
-    if (type === MovieType.MOVIE) {
-        throw new Errors.BadRequestError(`The seriesId is of type ${MovieType.MOVIE} but it has to be ${MovieType.SERIE} or ${MovieType.ANIME}`);
-    }
-    return type;
-}

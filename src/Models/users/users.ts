@@ -8,19 +8,20 @@ const users: Schema<IUserDocument> = new Schema<IUserDocument>({
     password: {type: String, required: true},
     email: {type: String, required: true},
     username: {type: String, required: true, unique: true},
+    role: {type: String, required: true}
 });
 
 
 users.pre(
     'save',
-    async function(next) {
+    async function (next) {
         const hashed = await hash(this.password, 10);
         this.password = hashed;
         next();
     }
 );
 
-users.methods.isValidPassword = async function(password: string) {
+users.methods.isValidPassword = async function (password: string) {
     const user = this;
     const isValid = await compare(password, user.password);
 

@@ -6,13 +6,22 @@ import {
     POST,
     PreProcessor,
     PUT,
+    QueryParam,
     ServiceContext
 } from "typescript-rest";
-import { createMovieValidator, getMoviesValidator } from "../Validators/movies/movies";
-import { createMovie, editMovie, getMovie, getMovies, likeMovie, addEpisode } from "../Services/movies";
+import { createMovieValidator } from "../Validators/movies/movies";
+import {
+    createMovie,
+    editMovie,
+    getMovie,
+    getMovies,
+    likeMovie,
+    addEpisode,
+    getEpisodes,
+
+} from "../Services/movies";
 import { IEditMovieValidator, IGetMovies, IMovieValidator } from "../Interfaces/movies";
 import { jwtValidAdmin, jwtValidator } from "../Validators/jwt/jwt";
-import { IEntityValidator } from "../Interfaces/common";
 import { IEpisode } from "../Interfaces/episodes";
 
 
@@ -22,10 +31,9 @@ export class Movies {
     context: ServiceContext;
 
     @GET
-    @Path("/:id")
+    @Path("/movie/:id")
     async getMovieById(@PathParam('id') id: string) {
         const movie = await getMovie(id);
-
         return movie;
     }
 
@@ -39,9 +47,9 @@ export class Movies {
 
     @POST
     @PreProcessor(createMovieValidator)
-    // @PreProcessor(jwtValidAdmin)
+    @PreProcessor(jwtValidAdmin)
     async createMovie(movie: IMovieValidator) {
-         const res = await createMovie(movie);
+        const res = await createMovie(movie);
 
         //TODO redirect to movies
         return "Movie created"
@@ -59,13 +67,22 @@ export class Movies {
     @PreProcessor(jwtValidator)
     async likeMovie(@PathParam('id') id: string) {
         await likeMovie(id, this.context.request.headers.authorization);
-        return "as";
+        return this.context.response.sendStatus(200);
     }
 
     @POST
     @Path("/addEpisode")
+    @PreProcessor(jwtValidator)
+    @PreProcessor(jwtValidAdmin)
     async addEpisode(episode: IEpisode) {
         const res = await addEpisode(episode)
-        return res;
+        return "add";
+    }
+
+    @GET
+    @Path("/getEpisodes")
+    async getEpisodes(@QueryParam('seriesId') seriesId: string,
+                      @QueryParam('season') season: string) {
+        return await getEpisodes(seriesId, season);
     }
 }

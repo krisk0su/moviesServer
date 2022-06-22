@@ -6,7 +6,7 @@ export const createJWT = (user: any) => {
             userName: user.userName,
             firstName: user.firstName,
             userId: user.id,
-            roles: [Roles.Admin]
+            roles: [user.role]
         },
         "dockerValue",
         { expiresIn: '999999s' });

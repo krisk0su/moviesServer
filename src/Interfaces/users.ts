@@ -1,5 +1,6 @@
 export interface IUserDocument extends ICreateUser, Document {
     isValidPassword: (password: string) => Promise<boolean>;
+    role: string;
 };
 
 export interface ICreateUser {

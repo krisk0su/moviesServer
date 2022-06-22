@@ -9,3 +9,8 @@ export interface IEpisode {
     watchLinks: any[],
     type: string
 }
+
+export interface IGetEpisodes {
+    seriesId: number,
+    season: string
+}

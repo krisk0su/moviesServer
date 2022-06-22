@@ -11,8 +11,7 @@ const movies: Schema<IMovieDocument> = new Schema<IMovieDocument>({
     imdbRating: {type: Number, required: true},
     actors: [{type: Types.ObjectId, ref: 'Actors', required: true}],
     likes: [{type: Types.ObjectId, ref: 'Users', required: true}],
-    genres: [{type: Types.ObjectId, ref: 'Genres', required: true}],
-    episodes: [{type: Types.ObjectId, ref: 'Episodes', required: true}]
+    genres: [{type: Types.ObjectId, ref: 'Genres', required: true}]
 })
 
 movies.index({name: 1, type: 1}, {unique: true});

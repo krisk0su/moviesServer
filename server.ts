@@ -4,6 +4,8 @@ import { ExtractJwt, StrategyOptions } from 'passport-jwt';
 import { PassportAuthenticator, Server } from 'typescript-rest';
 import { verify } from "jsonwebtoken";
 import { Strategy } from "passport-http-bearer";
+import { seedMovies } from "./src/Seeders/moviesSeeder";
+import { addAdminUser } from "./src/Seeders/userSeeder";
 
 export class ApiServer {
     public PORT: number = +process.env.PORT || 3333;
@@ -87,6 +89,8 @@ export class ApiServer {
         //Server.registerAuthenticator(authenticator, 'secondAuthenticator');
     }
 
-    private seed(): void {
+    private async seed() {
+        await seedMovies();
+        await addAdminUser();
     }
 }
